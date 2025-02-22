@@ -1,3 +1,48 @@
 section{
     height: 100vh;
 }
+
+.container {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('https://media.istockphoto.com/id/1501984364/photo/farmer-examining-sunflower-seedlings-at-sunset.webp?a=1&b=1&s=612x612&w=0&k=20&c=JKoNgQZ6NBx3RjvzhSgQ2ejZwOtKYIqeb4pxtyHsE3g=');
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-content {
+    display: flex;
+    height: max-content;
+    width: max-content;
+    background-color: white;
+    opacity: 80%;
+    padding: 20px;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+}
+
+.hero-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 300;
+}
+.hero-content h1 span {
+    color: green;
+    font-weight: bold;
+}
+
+.hero-content h2 {
+    font-size: 1.8rem;
+    font-weight: 300;
+}
+ mat-divider{
+    width: 50%;
+    color: green;
+    border-top-width: 6px;
+    border-top-style: solid;
+    border-radius: 40%;
+ }
