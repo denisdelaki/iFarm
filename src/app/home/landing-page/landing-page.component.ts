@@ -4,6 +4,7 @@ import { AboutComponent } from '../about/about.component';
 import { ServicesComponent } from '../services/services.component';
 import { ContactsComponent } from '../contacts/contacts.component';
 import { TestimonialsComponent } from '../testimonials/testimonials.component';
+import { MaterialModule } from '../../shared/material';
 
 @Component({
   selector: 'app-landing-page',
@@ -12,7 +13,8 @@ import { TestimonialsComponent } from '../testimonials/testimonials.component';
     AboutComponent,
     ServicesComponent,
     ContactsComponent,
-    TestimonialsComponent
+    TestimonialsComponent, 
+    MaterialModule
   ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.css'
