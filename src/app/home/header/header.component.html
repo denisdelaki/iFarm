@@ -1,1 +1,15 @@
-<p>header works!</p>
+<mat-toolbar>
+    <h3 class="logo">iFarm</h3>
+    <span class="spacer"></span>
+    
+    <div class="nav-items" [class.show-menu]="isMenuOpen">
+        <button mat-button *ngFor="let item of navigationItems" 
+                (click)="scrollToSection(item.path)">
+          {{item.label}}
+        </button>
+      </div>
+  
+    <button mat-icon-button class="menu-icon" (click)="toggleMenu()">
+      <mat-icon>{{isMenuOpen ? 'close' : 'menu'}}</mat-icon>
+    </button>
+  </mat-toolbar>

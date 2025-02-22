@@ -13,8 +13,7 @@ import { MaterialModule } from '../../shared/material';
     AboutComponent,
     ServicesComponent,
     ContactsComponent,
-    TestimonialsComponent, 
-    MaterialModule
+    TestimonialsComponent,
   ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.css'
