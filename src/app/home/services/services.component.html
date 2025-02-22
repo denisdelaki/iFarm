@@ -1,1 +1,14 @@
-<p>services works!</p>
+<div class="services-container">
+    <h3 class="service-heading">Our Services</h3>
+    <div class="services-grid">
+        <div class="service-card" *ngFor="let service of services">
+            <div class="card-image">
+                <img [src]="service.imageUrl" [alt]="service.title">
+            </div>
+            <div class="card-content">
+                <h4 class="card-title">{{service.title}}</h4>
+                <p class="card-description">{{service.description}}</p>
+            </div>
+        </div>
+    </div>
+</div>

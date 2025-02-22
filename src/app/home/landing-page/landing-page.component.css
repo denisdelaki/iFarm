@@ -2,6 +2,10 @@ section{
     height: 100vh;
 }
 
+#services{
+    padding-top: 40px;
+}
+
 .container {
     position: relative;
     height: 100%;
