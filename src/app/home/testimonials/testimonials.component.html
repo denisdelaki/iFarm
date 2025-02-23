@@ -1,1 +1,23 @@
-<p>testimonials works!</p>
+<div class="testimonials-section">
+    <h2>What Our Users Say</h2>
+    <swiper-container
+      slides-per-view="1"
+      navigation="true"
+      pagination="true"
+      autoplay="true"
+      loop="true">
+      @for (testimonial of testimonials; track testimonial.name) {
+        <swiper-slide>
+          <div class="testimonial-card">
+            <img [src]="testimonial.image" [alt]="testimonial.name" class="testimonial-image">
+            <div class="testimonial-content">
+              <p class="testimonial-text">"{{testimonial.text}}"</p>
+              <h3 class="testimonial-name">{{testimonial.name}}</h3>
+              <p class="testimonial-role">{{testimonial.role}}</p>
+            </div>
+          </div>
+        </swiper-slide>
+      }
+    </swiper-container>
+</div>
+  

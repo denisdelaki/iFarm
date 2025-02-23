@@ -81,4 +81,8 @@
       text-align: left;
       padding: 15px;
     }
+
+    .header-content p {
+      font-size: 18px;
+    }
   }
