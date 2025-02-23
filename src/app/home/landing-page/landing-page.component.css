@@ -1,9 +1,20 @@
 section{
-    height: 100vh;
+    min-height: 100vh;
+    margin: 0 auto;
 }
 
 #services{
     padding-top: 40px;
+}
+#home{
+    height: 100vh !important;
+    padding-top: 70px;
+}
+
+#about{
+    background-image: url('https://media.istockphoto.com/id/1745009177/photo/red-grapes.webp?a=1&b=1&s=612x612&w=0&k=20&c=cd9vyzbyUi2eAYlJw0jmeVHC-nOjvbxNKaSWTSCzAoY=');
+    background-size: cover;
+    background-position: center;
 }
 
 .container {
