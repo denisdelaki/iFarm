@@ -5,3 +5,9 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+:root {
+    --swiper-theme-color: #4CAF50 !important;
+    --swiper-pagination-bullet-inactive-color: #999;
+    --swiper-pagination-bullet-active-color: #4CAF50 !important;
+}
