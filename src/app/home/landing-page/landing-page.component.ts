@@ -22,4 +22,11 @@ import { MatDividerModule } from '@angular/material/divider';
 })
 export class LandingPageComponent {
 
+  scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
 }
