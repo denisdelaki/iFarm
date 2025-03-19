@@ -2,6 +2,7 @@
 @import 'swiper/css';
 @import 'swiper/css/navigation';
 @import 'swiper/css/pagination';
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
@@ -10,5 +11,77 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     --swiper-theme-color: #4CAF50 !important;
     --swiper-pagination-bullet-inactive-color: #999;
     --swiper-pagination-bullet-active-color: #4CAF50 !important;
+    
+    /* Material Design custom colors */
+    --primary-color: #4CAF50;
+    --primary-light-color: #80e27e;
+    --primary-dark-color: #087f23;
+    --accent-color: #8BC34A;
+    --warn-color: #FF5722;
+    --text-primary-on-primary: white;
 }
+
+/* Override Material Design colors */
+.mat-button.mat-primary,
+.mat-raised-button.mat-primary,
+.mat-flat-button.mat-primary,
+.mat-stroked-button.mat-primary {
+    background-color: var(--primary-color);
+    color: var(--text-primary-on-primary);
+}
+
+.mat-button.mat-accent,
+.mat-raised-button.mat-accent,
+.mat-flat-button.mat-accent,
+.mat-stroked-button.mat-accent {
+    background-color: var(--accent-color);
+}
+
+.mat-toolbar.mat-primary {
+    background-color: var(--primary-color);
+    color: var(--text-primary-on-primary);
+}
+
+.mat-form-field-ripple {
+    background-color: var(--primary-color);
+}
+
+.mat-form-field.mat-focused .mat-form-field-label {
+    color: var(--primary-color);
+}
+
+.mat-form-field.mat-focused .mat-form-field-ripple {
+    background-color: var(--primary-color);
+}
+
+.mat-checkbox-checked.mat-primary .mat-checkbox-background, 
+.mat-checkbox-indeterminate.mat-primary .mat-checkbox-background {
+    background-color: var(--primary-color);
+}
+
+.mat-radio-button.mat-primary.mat-radio-checked .mat-radio-outer-circle {
+    border-color: var(--primary-color);
+}
+
+.mat-radio-button.mat-primary .mat-radio-inner-circle {
+    background-color: var(--primary-color);
+}
+
+.mat-progress-bar.mat-primary .mat-progress-bar-fill::after {
+    background-color: var(--primary-color);
+}
+
+.mat-progress-spinner.mat-primary circle, 
+.mat-spinner.mat-primary circle {
+    stroke: var(--primary-color);
+}
+
+.mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+    background-color: var(--primary-color);
+}
+
+.mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+    background-color: rgba(76, 175, 80, 0.5);
+}
+
 

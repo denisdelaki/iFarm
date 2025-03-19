@@ -1,19 +1,23 @@
 <mat-toolbar>
-    <div class="header-content">
-        <h3 class="logo">i<span>Farm</span></h3>
-        <p>Your partner in Modern farming solutions</p>
-    </div>
+  <div class="header-content">
+    <h3 class="logo">i<span>Farm</span></h3>
+    <p>Your partner in Modern farming solutions</p>
+  </div>
 
-    <span class="spacer"></span>
-    
-    <div class="nav-items" [class.show-menu]="isMenuOpen">
-        <button mat-button *ngFor="let item of navigationItems" 
-                (click)="scrollToSection(item.path)">
-          {{item.label}}
-        </button>
-      </div>
-  
-    <button mat-icon-button class="menu-icon" (click)="toggleMenu()">
-      <mat-icon>{{isMenuOpen ? 'close' : 'menu'}}</mat-icon>
+  <span class="spacer"></span>
+
+  <div class="nav-items" [class.show-menu]="isMenuOpen">
+    <button
+      mat-button
+      *ngFor="let item of navigationItems"
+      (click)="scrollToSection(item.path)"
+    >
+      {{ item.label }}
     </button>
-  </mat-toolbar>
+    <button mat-button (click)="login()">Login</button>
+  </div>
+
+  <button mat-icon-button class="menu-icon" (click)="toggleMenu()">
+    <mat-icon>{{ isMenuOpen ? "close" : "menu" }}</mat-icon>
+  </button>
+</mat-toolbar>
