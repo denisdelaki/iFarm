@@ -32,10 +32,19 @@ export class HeaderComponent implements OnInit {
 
   scrollToSection(sectionId: string) {
     const cleanId = sectionId.replace('/', '');
-    const element = document.getElementById(cleanId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+
+    // Check if we're on the landing page
+    if (this.router.url.includes('/home') || this.router.url === '/') {
+      // If on landing page, just scroll to the section
+      const element = document.getElementById(cleanId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // If not on landing page, navigate to home with fragment
+      this.router.navigate(['/home'], { fragment: cleanId });
     }
+
     this.isMenuOpen = false;
   }
 
