@@ -67,8 +67,7 @@ export class AuthenticationComponent implements OnInit {
       const { email, password } = this.loginForm.value;
       signInWithEmailAndPassword(this.auth, email, password)
         .then((userCredential) => {
-          console.log('User logged in:', userCredential.user);
-          this.router.navigate(['/myprofile']);
+          this.router.navigate(['/services']);
         })
         .catch((error) => {
           console.error('Login error:', error.message);
@@ -83,7 +82,7 @@ export class AuthenticationComponent implements OnInit {
       createUserWithEmailAndPassword(this.auth, email, password)
         .then((userCredential) => {
           console.log('User signed up:', userCredential.user);
-          this.router.navigate(['/myprofile']);
+          this.router.navigate(['/services']);
         })
         .catch((error) => {
           console.error('Signup error:', error.message);

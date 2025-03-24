@@ -1,0 +1,24 @@
+<app-header></app-header>
+
+<div class="services-container">
+  <mat-button-toggle-group
+    class="service-toggle-group"
+    [value]="selectedService"
+    (change)="onServiceChange($event)"
+  >
+    <mat-button-toggle value="weather">Weather Forecast</mat-button-toggle>
+    <mat-button-toggle value="market">Market Analysis</mat-button-toggle>
+    <mat-button-toggle value="pest">Pest and Disease Monitor</mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <!-- Conditionally render service content -->
+  <div *ngIf="selectedService === 'weather'">
+    <app-weather-forecast></app-weather-forecast>
+  </div>
+  <div *ngIf="selectedService === 'market'">
+    <app-market-analysis></app-market-analysis>
+  </div>
+  <div *ngIf="selectedService === 'pest'">
+    <app-pest-disease-monitor></app-pest-disease-monitor>
+  </div>
+</div>
