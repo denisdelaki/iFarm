@@ -50,7 +50,7 @@ section{
     font-weight: 300;
 }
 .hero-content h1 span {
-    color: green;
+    color: #4CAF50;
     font-weight: bold;
 }
 
@@ -60,7 +60,7 @@ section{
 }
  mat-divider{
     width: 50%;
-    color: green;
+    color: #4CAF50;
     border-top-width: 6px;
     border-top-style: solid;
     border-radius: 40%;

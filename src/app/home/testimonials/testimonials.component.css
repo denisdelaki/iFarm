@@ -58,13 +58,15 @@
     margin-bottom: 0.5rem;
   }
   
-
-
-/* Navigation Arrows */
-::ng-deep .swiper-button-next,
-::ng-deep .swiper-button-prev {
-  color: #4CAF50 !important;
-}
+  :root {
+    --swiper-theme-color: #4CAF50 !important;
+  }
+  
+  :root :host {
+    --swiper-pagination-color: #4CAF50 !important;
+    --swiper-navigation-color: #4CAF50 !important;
+    --swiper-theme-color: #4CAF50 !important;
+  }
 
 /* Pagination Dots */
 

@@ -19,7 +19,7 @@
     margin-top: 20px;
   }
   .logo span{
-    color: green;
+    color: #4CAF50;
     font-weight: bold;
   }
 
@@ -42,7 +42,7 @@
     left: 0;
     width: 0;
     height: 2px;
-    background-color: green;
+    background-color: #4CAF50;
     transition: width 0.3s ease;
   }
   

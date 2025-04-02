@@ -10,10 +10,30 @@
   }
   button{
     color: #f0f0f0 !important;
-    background-color: green !important;
+    background-color: #4CAF50 !important;
   }
-  .mat-mdc-tab .mdc-tab-indicator__content--underline, .mat-mdc-tab .mdc-tab-indicator__content--underline{
-    border-color: green !important;
+
+  .mat-mdc-raised-button[disabled], .mat-mdc-raised-button.mat-mdc-button-disabled  {
+    background-color: rgb(171, 245, 171) !important;
+    color: white !important;
+    cursor: not-allowed !important;
+  }
+
+  .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+    color: #4CAF50 !important;
+}
+
+.mdc-tab__text-label{
+  color: #4CAF50 !important;
+}
+  
+.mat-mdc-tab-group,.mat-mdc-tab-nav-bar {
+    --mdc-tab-indicator-active-indicator-color: #4CAF50 !important;
+    --mat-tab-header-active-label-text-color: #4CAF50 !important;
+    --mat-tab-header-active-focus-label-text-color: #4CAF50 !important;
+    --mat-tab-header-active-hover-indicator-color: #4CAF50 !important;
+    --mat-tab-header-active-hover-label-text-color: #4CAF50 !important;
+    --mat-tab-header-active-focus-indicator-color: #4CAF50 !important;
   }
   .auth-container {
     width: 100%;
@@ -33,6 +53,10 @@
   
   .auth-form mat-form-field {
     margin-bottom: 16px;
+  }
+
+  mat-form-field input{
+    border-color: #4CAF50 !important;
   }
   
   .auth-form button {
