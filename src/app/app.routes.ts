@@ -3,6 +3,7 @@ import { LandingPageComponent } from './home/landing-page/landing-page.component
 import { AuthenticationComponent } from './auth/authentication/authentication.component';
 import { MyProfileComponent } from './features/my-profile/my-profile.component';
 import { ServicesComponent } from './features/services/services.component';
+import { AuthGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
   {
@@ -16,10 +17,12 @@ export const routes: Routes = [
   {
     path: 'myprofile',
     component: MyProfileComponent,
+    canActivate: [AuthGuard],
   },
   {
-    path: 'services',
+    path: 'myservices',
     component: ServicesComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: '',

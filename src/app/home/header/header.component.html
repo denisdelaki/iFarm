@@ -7,14 +7,33 @@
   <span class="spacer"></span>
 
   <div class="nav-items" [class.show-menu]="isMenuOpen">
-    <button
-      mat-button
-      *ngFor="let item of navigationItems"
-      (click)="scrollToSection(item.path)"
-    >
-      {{ item.label }}
-    </button>
-    <button mat-button (click)="login()">Login</button>
+    <!-- Public navigation items (always visible) -->
+    <ng-container *ngIf="!isLoggedIn">
+      <button
+        mat-button
+        *ngFor="let item of publicNavigationItems"
+        (click)="navigate(item.path)"
+      >
+        {{ item.label }}
+      </button>
+    </ng-container>
+
+    <!-- Private navigation items (visible only when logged in) -->
+    <ng-container *ngIf="isLoggedIn">
+      <button
+        mat-button
+        *ngFor="let item of privateNavigationItems"
+        (click)="navigate(item.path)"
+      >
+        {{ item.label }}
+      </button>
+      <button mat-raised-button color="warn" (click)="logout()">
+        <mat-icon>logout</mat-icon> Logout
+      </button>
+    </ng-container>
+
+    <!-- Login button (visible only when not logged in) -->
+    <button mat-button *ngIf="!isLoggedIn" (click)="login()">Login</button>
   </div>
 
   <button mat-icon-button class="menu-icon" (click)="toggleMenu()">

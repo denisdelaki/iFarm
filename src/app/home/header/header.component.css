@@ -28,7 +28,9 @@
     flex-direction: column;
     align-items: center;
 }
-
+.header-content p {
+  font-size: small;
+}
   
   .nav-items {
     display: flex;
@@ -83,6 +85,6 @@
     }
 
     .header-content p {
-      font-size: 13px;
+      font-size: x-small;
     }
   }

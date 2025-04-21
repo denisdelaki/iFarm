@@ -1,0 +1,75 @@
+.myprofile-container{
+    margin-top: 6rem;
+}
+.profile-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+    
+}
+.profile-content h1{
+    font-size: 2rem;
+}
+
+.profile-image{
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 20px;
+}
+.profile-image img{
+    height: 20vh;
+    border-radius: 50%;
+    margin: 10px;
+}
+.mat-mdc-raised-button:not(:disabled){
+    background-color: #4CAF50 !important;
+}
+mat-form-field{
+    padding-right: 10px;
+}
+html .mat-mdc-mini-fab.mat-primary{
+    background-color: #4CAF50 !important;
+}
+.upload-button{
+    background-color: #4CAF50 !important;
+}
+
+::ng-deep .mat-mdc-tab .mdc-tab-indicator__content--underline {
+  border-color: #4CAF50 !important;
+}
+::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: #4CAF50 !important;
+}
+
+
+
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #4CAF50 !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
+  color: #4CAF50 !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mat-form-field-underline .mat-form-field-ripple {
+  background-color: #4CAF50 !important;
+}
+
+@media  (max-width: 425px) {
+    .profile-form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+    .profile-form mat-form-field{
+        width: 100%;
+        max-width: 400px;
+        margin-bottom: 1rem;
+    }
+}

@@ -1,1 +1,231 @@
-<p>my-profile works!</p>
+<app-header></app-header>
+
+<div class="myprofile-container">
+  <mat-card class="profile-card" *ngIf="currentUser">
+    <mat-card-content>
+      <mat-tab-group>
+        <!-- Profile Information Tab -->
+        <mat-tab label="Profile Information">
+          <div class="profile-content">
+            <div class="profile-image-container">
+              <div class="profile-image">
+                <img
+                  [src]="profileImageUrl || 'assets/defaultprofile.jpeg'"
+                  alt="Profile Image"
+                />
+                <button
+                  mat-mini-fab
+                  color="primary"
+                  class="upload-button"
+                  (click)="fileInput.click()"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <input
+                  hidden
+                  type="file"
+                  #fileInput
+                  (change)="onFileSelected($event)"
+                  accept="image/*"
+                />
+              </div>
+              <p class="user-name">Name:{{ currentUser.displayName }}</p>
+              <p class="user-email">Email: {{ currentUser.email }}</p>
+              <p class="join-date" *ngIf="currentUser.metadata?.creationTime">
+                Joined: {{ currentUser.metadata.creationTime | date }}
+              </p>
+            </div>
+
+            <form
+              [formGroup]="profileForm"
+              (ngSubmit)="updateProfile()"
+              class="profile-form"
+            >
+              <h2>Edit Profile</h2>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Display Name</mat-label>
+                <input
+                  matInput
+                  formControlName="displayName"
+                  placeholder="Your name"
+                />
+                <mat-error
+                  *ngIf="profileForm.get('displayName')?.hasError('required')"
+                >
+                  Display name is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Email</mat-label>
+                <input
+                  matInput
+                  formControlName="email"
+                  placeholder="Your email"
+                  type="email"
+                />
+                <mat-error
+                  *ngIf="profileForm.get('email')?.hasError('required')"
+                >
+                  Email is required
+                </mat-error>
+                <mat-error *ngIf="profileForm.get('email')?.hasError('email')">
+                  Please enter a valid email address
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Phone Number</mat-label>
+                <input
+                  matInput
+                  formControlName="phoneNumber"
+                  placeholder="Your phone number"
+                />
+                <mat-error
+                  *ngIf="profileForm.get('phoneNumber')?.hasError('pattern')"
+                >
+                  Please enter a valid 10-digit phone number
+                </mat-error>
+              </mat-form-field>
+
+              <div class="form-actions">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="profileForm.invalid || isLoading"
+                >
+                  <mat-icon>save</mat-icon> Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-tab>
+
+        <!-- Change Password Tab -->
+        <mat-tab label="Change Password">
+          <div class="password-content">
+            <form
+              [formGroup]="passwordForm"
+              (ngSubmit)="changePassword()"
+              class="password-form"
+            >
+              <h2>Change Password</h2>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Current Password</mat-label>
+                <input
+                  matInput
+                  formControlName="currentPassword"
+                  type="password"
+                />
+                <mat-error
+                  *ngIf="
+                    passwordForm.get('currentPassword')?.hasError('required')
+                  "
+                >
+                  Current password is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>New Password</mat-label>
+                <input matInput formControlName="newPassword" type="password" />
+                <mat-error
+                  *ngIf="passwordForm.get('newPassword')?.hasError('required')"
+                >
+                  New password is required
+                </mat-error>
+                <mat-error
+                  *ngIf="passwordForm.get('newPassword')?.hasError('minlength')"
+                >
+                  Password must be at least 6 characters
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Confirm New Password</mat-label>
+                <input
+                  matInput
+                  formControlName="confirmPassword"
+                  type="password"
+                />
+                <mat-error
+                  *ngIf="
+                    passwordForm.get('confirmPassword')?.hasError('required')
+                  "
+                >
+                  Please confirm your new password
+                </mat-error>
+              </mat-form-field>
+
+              <div
+                *ngIf="passwordForm.hasError('passwordMismatch')"
+                class="error-message"
+              >
+                Passwords do not match
+              </div>
+
+              <div class="form-actions">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="passwordForm.invalid || isLoading"
+                >
+                  <mat-icon>lock</mat-icon> Update Password
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-tab>
+
+        <!-- Delete Account Tab -->
+        <mat-tab label="Delete Account">
+          <div class="delete-account-content">
+            <mat-card class="warning-card">
+              <mat-card-content>
+                <h2>
+                  <mat-icon color="warn">warning</mat-icon> Delete Account
+                </h2>
+                <p>Warning: This action is permanent and cannot be undone</p>
+              </mat-card-content>
+            </mat-card>
+
+            <form
+              [formGroup]="deleteAccountForm"
+              (ngSubmit)="deleteAccount()"
+              class="delete-form"
+            >
+              <h2>Confirm Account Deletion</h2>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Enter your password to confirm</mat-label>
+                <input matInput formControlName="password" type="password" />
+                <mat-error
+                  *ngIf="
+                    deleteAccountForm.get('password')?.hasError('required')
+                  "
+                >
+                  Password is required to confirm deletion
+                </mat-error>
+              </mat-form-field>
+
+              <div class="form-actions">
+                <button
+                  mat-raised-button
+                  color="warn"
+                  type="submit"
+                  [disabled]="deleteAccountForm.invalid || isLoading"
+                >
+                  <mat-icon>delete_forever</mat-icon> Delete My Account
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>

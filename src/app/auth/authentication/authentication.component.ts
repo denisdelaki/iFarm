@@ -76,7 +76,7 @@ export class AuthenticationComponent implements OnInit {
       signInWithEmailAndPassword(this.auth, email, password)
         .then((userCredential) => {
           this.showMessage('Login successful! Welcome back to Ifarm.');
-          this.router.navigate(['/services']);
+          this.router.navigate(['/myprofile']);
         })
         .catch((error) => {
           this.showMessage(`Login failed: ${error.message}`, true);
@@ -93,7 +93,7 @@ export class AuthenticationComponent implements OnInit {
       createUserWithEmailAndPassword(this.auth, email, password)
         .then((userCredential) => {
           this.showMessage('Account created successfully! Welcome to iFarm.');
-          this.router.navigate(['/services']);
+          this.router.navigate(['/myprofile']);
         })
         .catch((error) => {
           this.showMessage(`Signup failed: ${error.message}`, true);

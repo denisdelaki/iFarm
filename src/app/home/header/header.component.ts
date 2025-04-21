@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { Auth, onAuthStateChanged, User } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-header',
@@ -11,20 +13,55 @@ import { Router } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
+  isLoggedIn = false;
+  private authSubscription: Subscription | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private auth: Auth) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Subscribe to authentication state changes
+    onAuthStateChanged(this.auth, (user) => {
+      this.isLoggedIn = !!user;
+    });
+  }
 
-  navigationItems = [
+  ngOnDestroy() {
+    // Clean up subscription when component is destroyed
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+  }
+
+  // Public navigation items (visible to all users)
+  publicNavigationItems = [
     { path: 'home', label: 'Home' },
     { path: 'services', label: 'Services' },
     { path: 'about', label: 'About' },
     { path: 'testimonials', label: 'Testimonials' },
     { path: 'contact', label: 'Contact' },
   ];
+
+  // Private navigation items (visible only to logged-in users)
+  privateNavigationItems = [
+    { path: 'myprofile', label: 'My Profile' },
+    { path: 'myservices', label: 'My Services' },
+  ];
+
+  // Method to handle navigation
+  navigate(path: string) {
+    // Check if it's a private navigation item
+    if (path === 'myprofile' || path === 'myservices') {
+      // Direct navigation to route
+      this.router.navigate(['/' + path]);
+    } else {
+      // Use scroll behavior for public items
+      this.scrollToSection(path);
+    }
+
+    this.isMenuOpen = false;
+  }
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
@@ -50,5 +87,16 @@ export class HeaderComponent implements OnInit {
 
   login() {
     this.router.navigate(['/login']);
+  }
+
+  logout() {
+    this.auth
+      .signOut()
+      .then((): void => {
+        this.router.navigate(['/home']);
+      })
+      .catch((error: any): void => {
+        console.error('Logout error:', error);
+      });
   }
 }
