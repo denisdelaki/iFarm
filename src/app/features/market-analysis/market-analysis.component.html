@@ -1,1 +1,174 @@
-<p>market-analysis works!</p>
+<div class="market-analysis-container">
+  <div class="market-header">
+    <h1>Market Analysis</h1>
+    <p class="subtitle">
+      Current market trends and forecasts for agricultural products
+    </p>
+  </div>
+
+  <!-- Loading spinner -->
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading market data...</p>
+  </div>
+
+  <!-- Error message -->
+  <div class="error-container" *ngIf="errorMessage && !isLoading">
+    <p class="error-message">{{ errorMessage }}</p>
+    <button mat-raised-button color="primary" (click)="loadMarketData()">
+      Retry
+    </button>
+  </div>
+
+  <!-- Product list view -->
+  <div
+    class="products-container"
+    *ngIf="!isLoading && !errorMessage && !showDetailView"
+  >
+    <div class="product-card-container" *ngFor="let product of products">
+      <mat-card class="product-card">
+        <mat-card-header>
+          <mat-card-title>{{ product.name }}</mat-card-title>
+          <mat-card-subtitle>
+            <span class="price"
+              >{{
+                product.currentPrice | currency : "KES" : "symbol" : "1.2-2"
+              }}/{{ product.priceUnit.split("/")[1] }}</span
+            >
+            <span
+              class="price-change"
+              [ngClass]="getPriceChangeClass(product.priceChange)"
+            >
+              <mat-icon>{{
+                product.priceChange >= 0 ? "arrow_upward" : "arrow_downward"
+              }}</mat-icon>
+              {{ product.priceChange | number : "1.1-1" }}%
+            </span>
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <img
+          mat-card-image
+          [src]="product.image"
+          [alt]="product.name"
+          class="product-image"
+          onerror="this.src='assets/images/placeholder.jpg'"
+        />
+
+        <mat-card-content>
+          <div class="demand-indicator">
+            <span>Demand:</span>
+            <span
+              class="demand-badge"
+              [ngClass]="getDemandClass(product.demand)"
+              >{{ product.demand }}</span
+            >
+          </div>
+          <p class="forecast">{{ product.forecast }}</p>
+        </mat-card-content>
+
+        <mat-card-actions>
+          <button
+            mat-button
+            color="primary"
+            (click)="viewProductDetails(product)"
+          >
+            <mat-icon>trending_up</mat-icon> VIEW DETAILS
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Product detail view -->
+  <div
+    class="product-detail-container"
+    *ngIf="showDetailView && selectedProduct"
+  >
+    <div class="detail-header">
+      <button mat-icon-button (click)="backToList()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2>{{ selectedProduct.name }} Market Analysis</h2>
+    </div>
+
+    <div class="detail-content">
+      <div class="product-info">
+        <img
+          [src]="selectedProduct.image"
+          [alt]="selectedProduct.name"
+          class="detail-image"
+          onerror="this.src='assets/images/placeholder.jpg'"
+        />
+
+        <div class="info-section">
+          <h3>Current Market Status</h3>
+          <div class="info-row">
+            <span class="info-label">Current Price:</span>
+            <span class="info-value"
+              >{{
+                selectedProduct.currentPrice
+                  | currency : "KES" : "symbol" : "1.2-2"
+              }}/{{ selectedProduct.priceUnit.split("/")[1] }}</span
+            >
+          </div>
+          <div class="info-row">
+            <span class="info-label">Price Change:</span>
+            <span
+              class="info-value"
+              [ngClass]="getPriceChangeClass(selectedProduct.priceChange)"
+            >
+              <mat-icon>{{
+                selectedProduct.priceChange >= 0
+                  ? "arrow_upward"
+                  : "arrow_downward"
+              }}</mat-icon>
+              {{ selectedProduct.priceChange | number : "1.1-1" }}%
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Demand:</span>
+            <span
+              class="demand-badge"
+              [ngClass]="getDemandClass(selectedProduct.demand)"
+              >{{ selectedProduct.demand }}</span
+            >
+          </div>
+          <div class="info-row">
+            <span class="info-label">Forecast:</span>
+            <span class="info-value">{{ selectedProduct.forecast }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-description">
+        <h3>Market Overview</h3>
+        <p>{{ selectedProduct.description }}</p>
+      </div>
+
+      <div class="charts-container">
+        <div class="chart-section">
+          <h3>Price Trends (Last 12 Months)</h3>
+          <div class="chart-wrapper" *ngIf="priceChartData">
+            <!-- <canvas baseChart
+                [data]="priceChartData"
+                [options]="chartOptions"
+                [type]="'line'">
+              </canvas> -->
+          </div>
+        </div>
+
+        <div class="chart-section">
+          <h3>Demand Trends (Last 12 Months)</h3>
+          <div class="chart-wrapper" *ngIf="demandChartData">
+            <!-- <canvas baseChart
+                [data]="demandChartData"
+                [options]="chartOptions"
+                [type]="'line'">
+              </canvas> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

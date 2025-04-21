@@ -1,0 +1,256 @@
+.market-analysis-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .market-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .market-header h1 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 10px;
+  }
+  
+  .subtitle {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+  }
+  
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0;
+  }
+  
+  .error-container {
+    text-align: center;
+    padding: 30px;
+    background-color: #f8d7da;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+  
+  .error-message {
+    color: #721c24;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+  }
+  
+  .products-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .product-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .product-image {
+    height: 180px;
+    object-fit: cover;
+  }
+  
+  .price {
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+  
+  .price-change {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+    font-weight: bold;
+  }
+  
+  .positive-change {
+    color: #27ae60;
+  }
+  
+  .negative-change {
+    color: #e74c3c;
+  }
+  
+  .demand-indicator {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .demand-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+  
+  .high-demand {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .medium-demand {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+  
+  .low-demand {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  .forecast {
+    margin-top: 10px;
+    font-style: italic;
+    color: #555;
+  }
+  
+  mat-card-actions {
+    margin-top: auto;
+    padding: 8px;
+  }
+  
+  /* Detail view styles */
+  .product-detail-container {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  
+  .detail-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .detail-header h2 {
+    margin: 0 0 0 10px;
+    color: #2c3e50;
+  }
+  
+  .detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .product-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .detail-image {
+    width: 250px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .info-section {
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  .info-section h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 8px;
+  }
+  
+  .info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .info-label {
+    font-weight: bold;
+    width: 120px;
+    color: #7f8c8d;
+  }
+  
+  .info-value {
+    flex: 1;
+  }
+  
+  .product-description {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .product-description h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 8px;
+  }
+  
+  .charts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .chart-section {
+    flex: 1;
+    min-width: 300px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chart-section h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 8px;
+  }
+  
+  .chart-wrapper {
+    height: 300px;
+    position: relative;
+  }
+  
+  @media (max-width: 768px) {
+    .products-container {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    
+    .product-info {
+      flex-direction: column;
+    }
+    
+    .detail-image {
+      width: 100%;
+      height: 200px;
+    }
+    
+    .charts-container {
+      flex-direction: column;
+    }
+  }
+  
