@@ -1,0 +1,168 @@
+.pest-disease-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .header h1 {
+    font-size: 1.5rem;
+    color: #2e7d32;
+  }
+  
+  .header p {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  .filters-section {
+    margin-bottom: 20px;
+  }
+  
+  .filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    align-items: center;
+  }
+  
+  .results-count {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 1.1rem;
+    color: #444;
+  }
+  
+  .pest-disease-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .pest-disease-card {
+    transition: transform 0.2s;
+  }
+  
+  .pest-disease-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .pest-disease-image {
+    max-height: 200px;
+    object-fit: cover;
+  }
+  
+  .pest-avatar, .disease-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .pest-avatar {
+    background-color: #ffca28;
+  }
+  
+  .disease-avatar {
+    background-color: #ef5350;
+  }
+  
+  .badge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    margin-right: 5px;
+  }
+  
+  .pest-badge {
+    background-color: #ffee58;
+    color: #333;
+  }
+  
+  .disease-badge {
+    background-color: #ef9a9a;
+    color: #333;
+  }
+  
+  .plant-badge {
+    background-color: #a5d6a7;
+    color: #333;
+  }
+  
+  .animal-badge {
+    background-color: #b0bec5;
+    color: #333;
+  }
+  
+  .description {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+  }
+  
+  .details-section h3 {
+    font-size: 1.1rem;
+    margin: 10px 0 5px;
+  }
+  
+  mat-chip-set {
+    margin-bottom: 10px;
+  }
+  
+  mat-expansion-panel {
+    margin-bottom: 10px;
+  }
+
+  .card-title{
+    padding-bottom: 1rem !important;
+  }
+  mat-card-header{
+    padding: 0.5rem;
+  }
+  .mat-mdc-raised-button:not(:disabled){
+    background-color: #4CAF50 !important;
+  }
+  .loading, .error, .no-results {
+    text-align: center;
+    margin: 40px 0;
+  }
+  
+  .error-card, .no-results mat-card {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  mat-spinner {
+    margin: 0 auto 20px;
+  }
+
+  ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #4CAF50 !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
+  color: #4CAF50 !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mat-form-field-underline .mat-form-field-ripple {
+  background-color: #4CAF50 !important;
+}
+  
+  @media (max-width: 600px) {
+    .header h1 {
+      font-size: 2rem;
+    }
+  
+    .filters-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .pest-disease-grid {
+      grid-template-columns: 1fr;
+    }
+  }

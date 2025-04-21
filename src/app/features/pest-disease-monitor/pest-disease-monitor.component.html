@@ -1,1 +1,262 @@
-<p>pest-disease-monitor works!</p>
+<div class="pest-disease-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>Pest & Disease Monitor</h1>
+    <p>
+      Learn about common pests and diseases affecting crops and livestock in
+      Kenya
+    </p>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <mat-card>
+      <mat-card-content>
+        <div class="filters-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Search</mat-label>
+            <input
+              matInput
+              [(ngModel)]="searchTerm"
+              placeholder="Search by name or description"
+              (keyup)="applyFilters()"
+              aria-label="Search pests or diseases"
+            />
+            <button
+              *ngIf="searchTerm"
+              matSuffix
+              mat-icon-button
+              aria-label="Clear search"
+              (click)="searchTerm = ''; applyFilters()"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Type</mat-label>
+            <mat-select
+              [(ngModel)]="filterType"
+              (selectionChange)="applyFilters()"
+              aria-label="Filter by pest or disease type"
+            >
+              <mat-option value="all">All Types</mat-option>
+              <mat-option value="pest">Pests</mat-option>
+              <mat-option value="disease">Diseases</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Category</mat-label>
+            <mat-select
+              [(ngModel)]="filterCategory"
+              (selectionChange)="applyFilters()"
+              aria-label="Filter by plant or animal category"
+            >
+              <mat-option value="all">All Categories</mat-option>
+              <mat-option value="plant">Plants</mat-option>
+              <mat-option value="animal">Animals</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Season</mat-label>
+            <mat-select
+              [(ngModel)]="filterSeason"
+              (selectionChange)="applyFilters()"
+              aria-label="Filter by season"
+            >
+              <mat-option value="all">All Seasons</mat-option>
+              <mat-option *ngFor="let season of seasons" [value]="season">{{
+                season
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Region</mat-label>
+            <mat-select
+              [(ngModel)]="filterRegion"
+              (selectionChange)="applyFilters()"
+              aria-label="Filter by region in Kenya"
+            >
+              <mat-option value="all">All Regions</mat-option>
+              <mat-option *ngFor="let region of regions" [value]="region">{{
+                region
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="resetFilters()"
+            aria-label="Reset all filters"
+          >
+            <mat-icon>refresh</mat-icon> Reset Filters
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+    <p>Loading pest and disease data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error" *ngIf="errorMessage">
+    <mat-card class="error-card">
+      <mat-card-content>
+        <p>{{ errorMessage }}</p>
+        <button mat-raised-button color="primary" (click)="retryLoad()">
+          Retry
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Results Count -->
+  <div class="results-count" *ngIf="!isLoading && !errorMessage">
+    <p>
+      Showing {{ filteredPestDiseases.length }} of
+      {{ pestDiseases.length }} pests and diseases
+    </p>
+  </div>
+
+  <!-- Pest/Disease Grid -->
+  <div
+    class="pest-disease-grid"
+    *ngIf="!isLoading && !errorMessage && filteredPestDiseases.length > 0"
+  >
+    <mat-card
+      *ngFor="let item of filteredPestDiseases"
+      class="pest-disease-card"
+    >
+      <mat-card-header>
+        <div
+          mat-card-avatar
+          [ngClass]="{
+            'pest-avatar': item.type === 'pest',
+            'disease-avatar': item.type === 'disease'
+          }"
+        >
+          <mat-icon>{{
+            item.type === "pest" ? "bug_report" : "coronavirus"
+          }}</mat-icon>
+        </div>
+        <mat-card-title class="card-title">{{ item.name }}</mat-card-title>
+        <mat-card-subtitle>
+          <span
+            class="badge"
+            [ngClass]="{
+              'pest-badge': item.type === 'pest',
+              'disease-badge': item.type === 'disease'
+            }"
+          >
+            {{ item.type | titlecase }}
+          </span>
+          <span
+            class="badge"
+            [ngClass]="{
+              'plant-badge': item.category === 'plant',
+              'animal-badge': item.category === 'animal'
+            }"
+          >
+            {{ item.category | titlecase }}
+          </span>
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <img
+        mat-card-image
+        [src]="item.imageUrl"
+        [alt]="item.name + ' image'"
+        class="pest-disease-image"
+        (error)="handleImageError($event)"
+      />
+
+      <mat-card-content>
+        <p class="description">{{ item.description }}</p>
+
+        <mat-divider></mat-divider>
+
+        <div class="details-section">
+          <h3>Affects</h3>
+          <mat-chip-set>
+            <mat-chip *ngFor="let species of item.affectedSpecies">{{
+              species
+            }}</mat-chip>
+          </mat-chip-set>
+
+          <h3>Common Seasons</h3>
+          <mat-chip-set>
+            <mat-chip *ngFor="let season of item.seasons">{{
+              season
+            }}</mat-chip>
+          </mat-chip-set>
+
+          <h3>Regions in Kenya</h3>
+          <mat-chip-set>
+            <mat-chip *ngFor="let region of item.regions">{{
+              region
+            }}</mat-chip>
+          </mat-chip-set>
+        </div>
+
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Symptoms</mat-panel-title>
+            </mat-expansion-panel-header>
+            <ul>
+              <li *ngFor="let symptom of item.symptoms">{{ symptom }}</li>
+            </ul>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Prevention Methods</mat-panel-title>
+            </mat-expansion-panel-header>
+            <ul>
+              <li *ngFor="let method of item.preventionMethods">
+                {{ method }}
+              </li>
+            </ul>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Control Methods</mat-panel-title>
+            </mat-expansion-panel-header>
+            <ul>
+              <li *ngFor="let method of item.controlMethods">{{ method }}</li>
+            </ul>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- No Results -->
+  <div
+    class="no-results"
+    *ngIf="!isLoading && !errorMessage && filteredPestDiseases.length === 0"
+  >
+    <mat-card>
+      <mat-card-content>
+        <p>No pests or diseases match your current filters.</p>
+        <button
+          class="resetButton"
+          mat-raised-button
+          color="primary"
+          (click)="resetFilters()"
+        >
+          Clear Filters
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
