@@ -1,0 +1,41 @@
+[
+  {
+    "id": "1",
+    "name": "Fresh Tomatoes",
+    "description": "Organic, ripe tomatoes from our farm.",
+    "price": 5.99,
+    "imageUrl": "https://res.cloudinary.com/demo/image/upload/v1634567890/tomatoes.jpg",
+    "location": "Nairobi, Kenya",
+    "sellerId": "user1",
+    "sellerName": "John Farmer",
+    "sellerEmail": "john@farm.com",
+    "sellerPhone": "+254700123456",
+    "createdAt": "2025-04-23T10:00:00Z"
+  },
+  {
+    "id": "2",
+    "name": "Dairy Cow",
+    "description": "Healthy 3-year-old dairy cow, high milk yield.",
+    "price": 1200.0,
+    "imageUrl": "https://res.cloudinary.com/demo/image/upload/v1634567890/cow.jpg",
+    "location": "Eldoret, Kenya",
+    "sellerId": "user2",
+    "sellerName": "Mary Livestock",
+    "sellerEmail": "mary@livestock.com",
+    "sellerPhone": "+254711987654",
+    "createdAt": "2025-04-23T09:30:00Z"
+  },
+  {
+    "id": "3",
+    "name": "Free-Range Eggs",
+    "description": "Dozen fresh free-range eggs.",
+    "price": 3.5,
+    "imageUrl": "https://res.cloudinary.com/demo/image/upload/v1634567890/eggs.jpg",
+    "location": "Nakuru, Kenya",
+    "sellerId": "user3",
+    "sellerName": "Susan Poultry",
+    "sellerEmail": "susan@poultry.com",
+    "sellerPhone": "+254722345678",
+    "createdAt": "2025-04-23T08:45:00Z"
+  }
+]

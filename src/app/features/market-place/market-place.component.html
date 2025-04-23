@@ -1,0 +1,285 @@
+<app-header></app-header>
+
+<div class="marketplace-container">
+  <div class="marketplace-header">
+    <h2 class="mat-headline-4">Marketplace</h2>
+    <div *ngIf="isLoading">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </div>
+  </div>
+
+  <!-- Marketplace Stats -->
+  <div class="marketplace-stats" *ngIf="user">
+    <div class="stat-item">
+      <div class="stat-value">{{ totalProducts }}</div>
+      <div class="stat-label">Total Products</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">{{ myProducts }}</div>
+      <div class="stat-label">My Products</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">{{ myOrders }}</div>
+      <div class="stat-label">My Orders</div>
+    </div>
+  </div>
+
+  <!-- Add Product Button -->
+  <div *ngIf="user" class="add-product-button">
+    <button mat-raised-button color="primary" (click)="openAddProductDialog()">
+      <mat-icon>add_circle</mat-icon> Add Product
+    </button>
+  </div>
+
+  <!-- Tabs for different marketplace sections -->
+  <mat-tab-group
+    [(selectedIndex)]="activeTab"
+    animationDuration="300ms"
+    *ngIf="user"
+  >
+    <!-- Browse Products Tab -->
+    <mat-tab label="Browse Products">
+      <div *ngIf="products.length === 0 && !isLoading" class="no-items-message">
+        <mat-icon>shopping_basket</mat-icon>
+        <p>No products available in the marketplace yet.</p>
+      </div>
+
+      <div class="product-list">
+        <mat-card class="product-card" *ngFor="let product of products">
+          <!-- Product Images with Carousel -->
+          <div class="product-image-container">
+            <img
+              [src]="product.imageUrls[getCurrentImageIndex(product)]"
+              alt="{{ product.name }}"
+              *ngIf="product.imageUrls && product.imageUrls.length > 0"
+            />
+
+            <!-- Image Navigation Dots -->
+            <div
+              class="image-navigation"
+              *ngIf="product.imageUrls && product.imageUrls.length > 1"
+            >
+              <div
+                *ngFor="let img of product.imageUrls; let i = index"
+                [class.active]="i === getCurrentImageIndex(product)"
+                class="image-dot"
+                (click)="setCurrentImageIndex(product, i)"
+              ></div>
+            </div>
+
+            <!-- Image Navigation Arrows -->
+            <button
+              mat-icon-button
+              class="image-nav-left"
+              *ngIf="product.imageUrls && product.imageUrls.length > 1"
+              (click)="prevImage(product)"
+            >
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              class="image-nav-right"
+              *ngIf="product.imageUrls && product.imageUrls.length > 1"
+              (click)="nextImage(product)"
+            >
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </div>
+
+          <div class="product-content">
+            <div class="product-header">
+              <div class="product-title">{{ product.name }}</div>
+              <div class="product-price">
+                ${{ (product.price || 0).toFixed(2) }}
+              </div>
+              <div
+                class="product-inventory"
+                [ngClass]="{
+                  'low-stock':
+                    product.inventory.remaining <= 3 &&
+                    product.inventory.remaining > 0,
+                  'out-of-stock': product.inventory.remaining === 0
+                }"
+              >
+                {{ product.inventory.remaining }} of
+                {{ product.inventory.total }} available
+              </div>
+            </div>
+
+            <mat-chip-listbox>
+              <mat-chip>{{ product.category }}</mat-chip>
+            </mat-chip-listbox>
+
+            <p class="product-description">{{ product.description }}</p>
+
+            <div class="product-meta">
+              <mat-icon>location_on</mat-icon> {{ product.location }}
+            </div>
+
+            <div class="product-meta">
+              <mat-icon>person</mat-icon> {{ product.sellerName }}
+            </div>
+
+            <div class="product-meta">
+              <mat-icon>email</mat-icon> {{ product.sellerEmail }}
+            </div>
+
+            <div
+              class="product-meta"
+              *ngIf="product.sellerPhone !== 'Not provided'"
+            >
+              <mat-icon>phone</mat-icon> {{ product.sellerPhone }}
+            </div>
+
+            <div class="product-actions">
+              <button
+                mat-raised-button
+                color="accent"
+                (click)="buyProduct(product)"
+                *ngIf="
+                  user &&
+                  user.uid !== product.sellerId &&
+                  product.inventory.remaining > 0
+                "
+                [disabled]="isLoading"
+              >
+                <mat-icon>shopping_cart</mat-icon> Buy Now
+              </button>
+
+              <button
+                mat-raised-button
+                color="warn"
+                *ngIf="
+                  user &&
+                  user.uid !== product.sellerId &&
+                  product.inventory.remaining === 0
+                "
+                disabled
+              >
+                <mat-icon>remove_shopping_cart</mat-icon> Out of Stock
+              </button>
+
+              <button
+                mat-stroked-button
+                color="primary"
+                *ngIf="user && user.uid === product.sellerId"
+              >
+                <mat-icon>edit</mat-icon> Edit
+              </button>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Orders Tab -->
+    <mat-tab label="My Orders">
+      <mat-card class="order-tracking">
+        <mat-card-header>
+          <mat-card-title>Your Orders</mat-card-title>
+          <mat-card-subtitle
+            >Track the status of your purchases and sales</mat-card-subtitle
+          >
+        </mat-card-header>
+
+        <mat-card-content>
+          <div
+            *ngIf="orders.length === 0 && !isLoading"
+            class="no-items-message"
+          >
+            <mat-icon>receipt_long</mat-icon>
+            <p>You don't have any orders yet.</p>
+          </div>
+
+          <div class="order-list">
+            <div class="order-item" *ngFor="let order of orders">
+              <div class="order-header">
+                <div class="order-id">
+                  Order #{{ order.id?.substring(0, 8) }}
+                </div>
+                <div class="order-date">
+                  {{ order.createdAt | date : "medium" }}
+                </div>
+              </div>
+
+              <div class="order-product">
+                <img
+                  [src]="order.productImage"
+                  alt="Product image"
+                  *ngIf="order.productImage"
+                  class="order-product-image"
+                />
+                <div class="order-product-details">
+                  <div class="order-product-name">{{ order.productName }}</div>
+                  <div class="order-product-price">
+                    ${{ (order.totalPrice || 0).toFixed(2) }}
+                  </div>
+                  <div class="order-quantity">
+                    Quantity: {{ order.quantity }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="order-details">
+                <div class="order-status-container">
+                  <span class="order-status-label">Status:</span>
+                  <span
+                    class="order-status"
+                    [ngClass]="{
+                      'status-pending': order.status === 'pending',
+                      'status-shipped': order.status === 'shipped',
+                      'status-delivered': order.status === 'delivered'
+                    }"
+                  >
+                    {{ order.status | titlecase }}
+                  </span>
+                </div>
+
+                <div class="order-parties">
+                  <div *ngIf="user.uid === order.buyerId">
+                    <strong>Seller:</strong> {{ order.sellerName }}
+                  </div>
+                  <div *ngIf="user.uid === order.sellerId">
+                    <strong>Buyer:</strong> {{ order.buyerName }}
+                  </div>
+                </div>
+
+                <mat-form-field
+                  *ngIf="user.uid === order.sellerId"
+                  appearance="outline"
+                  class="status-update-field"
+                >
+                  <mat-label>Update Status</mat-label>
+                  <mat-select
+                    [value]="order.status"
+                    (selectionChange)="
+                      updateOrderStatus(order.id!, $event.value)
+                    "
+                  >
+                    <mat-option value="pending">Pending</mat-option>
+                    <mat-option value="shipped">Shipped</mat-option>
+                    <mat-option value="delivered">Delivered</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+  </mat-tab-group>
+
+  <!-- Login Message for non-authenticated users -->
+  <mat-card *ngIf="!user && !isLoading" class="login-message">
+    <mat-card-content>
+      <div class="login-message-content">
+        <mat-icon>lock</mat-icon>
+        <h3>Please Log In</h3>
+        <p>You need to be logged in to access the marketplace features.</p>
+        <button mat-raised-button color="primary" routerLink="/login">
+          Go to Login
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

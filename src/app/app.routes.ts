@@ -4,6 +4,7 @@ import { AuthenticationComponent } from './auth/authentication/authentication.co
 import { MyProfileComponent } from './features/my-profile/my-profile.component';
 import { ServicesComponent } from './features/services/services.component';
 import { AuthGuard } from './auth/auth.guard';
+import { MarketPlaceComponent } from './features/market-place/market-place.component';
 
 export const routes: Routes = [
   {
@@ -22,6 +23,11 @@ export const routes: Routes = [
   {
     path: 'myservices',
     component: ServicesComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'marketplace',
+    component: MarketPlaceComponent,
     canActivate: [AuthGuard],
   },
   {

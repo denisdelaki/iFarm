@@ -8,16 +8,8 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { environment } from '../../environment';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
-
-const firebaseConfig = {
-  apiKey: 'AIzaSyDkg1Kn05tauOZ_svwDHhgR0AiagoDTyEw',
-  authDomain: 'ifarm-12212.firebaseapp.com',
-  projectId: 'ifarm-12212',
-  storageBucket: 'ifarm-12212.firebasestorage.app',
-  messagingSenderId: '1016974952765',
-  appId: '1:1016974952765:web:d5b087ab792982e3f7dd54',
-  measurementId: 'G-0F8P628WL0',
-};
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
+import { getDatabase, provideDatabase } from '@angular/fire/database';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,5 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
+    provideDatabase(() => getDatabase()),
   ],
 };

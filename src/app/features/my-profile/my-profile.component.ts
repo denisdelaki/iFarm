@@ -194,9 +194,9 @@ export class MyProfileComponent implements OnInit {
     try {
       const formData = new FormData();
       formData.append('file', this.selectedFile);
-      formData.append('upload_preset', 'ifarmPhotos'); // Use your preset name
-      formData.append('api_key', '577692892646954'); // Optional, depending on setup
-      formData.append('folder', `ifarm/profileImages/${this.currentUser.uid}`); // Optional, for organization
+      formData.append('upload_preset', 'ifarmPhotos');
+      formData.append('api_key', '577692892646954');
+      formData.append('folder', `ifarm/profileImages/${this.currentUser.uid}`);
 
       const response = await this.http
         .post<CloudinaryResponse>(

@@ -47,12 +47,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   privateNavigationItems = [
     { path: 'myprofile', label: 'My Profile' },
     { path: 'myservices', label: 'My Services' },
+    { path: 'marketplace', label: 'Market Place' },
   ];
 
   // Method to handle navigation
   navigate(path: string) {
     // Check if it's a private navigation item
-    if (path === 'myprofile' || path === 'myservices') {
+    if (
+      path === 'myprofile' ||
+      path === 'myservices' ||
+      path === 'marketplace'
+    ) {
       // Direct navigation to route
       this.router.navigate(['/' + path]);
     } else {

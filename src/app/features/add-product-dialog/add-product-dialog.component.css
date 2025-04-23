@@ -1,0 +1,275 @@
+.add-product {
+    padding: 1rem; 
+    box-sizing: border-box; 
+    max-width: 100%; 
+  }
+  
+  /* Form section spacing */
+  .form-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Section title styling */
+  .section-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.125rem; /* 18px equivalent */
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  
+  .section-title mat-icon {
+    margin-right: 0.5rem;
+  }
+  
+  /* Form row for multi-column layout */
+  .form-row {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 1rem; 
+  }
+  
+  /* Form column */
+  .form-col {
+    flex: 1;
+    min-width: 250px; 
+  }
+  
+  /* Full-width fields */
+  .full-width {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Image upload container */
+  .image-upload-container {
+    margin-top: 1rem;
+  }
+  
+  /* Image preview container */
+  .image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  /* Image preview */
+  .image-preview {
+    position: relative;
+    width: 80px; 
+    height: 80px;
+  }
+  
+  .image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  /* Remove image button */
+  .remove-image {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  .remove-image mat-icon {
+    color: white;
+    font-size: 1rem;
+  }
+  
+  /* Selected files info */
+  .selected-files-info {
+    margin-top: 0.5rem;
+    color: #666;
+    font-size: 0.875rem; 
+  }
+  
+  /* Dialog actions */
+  mat-dialog-actions {
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+  
+  /* Buttons */
+  mat-dialog-actions button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    min-width: 100px; 
+  }
+  
+  /* Media Queries for Responsive Design */
+  
+  /* Small devices (320px and up) */
+  @media (max-width: 480px) {
+    .add-product {
+      padding: 0.5rem; /* Reduce padding further */
+    }
+    
+    .form-row {
+      flex-direction: column;
+      gap: 0.5rem; /* Reduce gap */
+    }
+    
+    .form-col {
+      min-width: 100%;
+    }
+    
+    .section-title {
+      font-size: 0.9rem; /* Smaller font */
+    }
+    
+    .image-preview {
+      width: 50px; /* Smaller preview */
+      height: 50px;
+    }
+    
+    mat-dialog-content {
+      max-height: 75vh;
+    }
+    
+    mat-dialog-actions {
+      padding: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    
+    mat-dialog-actions button {
+      min-width: 70px;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+    }
+    
+    mat-card-title {
+      font-size: 1rem;
+    }
+    
+    mat-card-subtitle {
+      font-size: 0.8rem;
+    }
+    
+    .image-upload-container button {
+      font-size: 0.75rem;
+    }
+  }
+  @media (min-width: 361px) {
+    .add-product {
+      padding: 0.3rem; /* Reduce padding further */
+    }
+    
+    .form-row {
+      flex-direction: column;
+      gap: 0.3rem; /* Reduce gap */
+    }
+    
+    .form-col {
+      min-width: 70%;
+    }
+    
+    .section-title {
+      font-size: 0.7rem; /* Smaller font */
+    }
+    
+    .image-preview {
+      width: 30px; /* Smaller preview */
+      height: 40px;
+    }
+    .full-width {
+        width: 90%;
+    }
+    
+    mat-dialog-content {
+      max-height: 75vh;
+    }
+    .mat-mdc-card-content{
+        padding: 0 !important;
+    }
+    
+    mat-dialog-actions {
+      padding: 0.3rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    
+    mat-dialog-actions button {
+      min-width: 50px;
+      font-size: 0.55rem;
+      padding: 0.20rem 0.3rem;
+    }
+    
+    mat-card-title {
+      font-size: 1rem;
+    }
+    
+    mat-card-subtitle {
+      font-size: 0.8rem;
+    }
+    
+    .image-upload-container button {
+      font-size: 0.75rem;
+    }
+  }
+  
+  /* Additional styles for very small screens */
+  @media (max-width: 360px) {
+    .add-product {
+      padding: 0.25rem;
+    }
+    
+    .form-section {
+      margin-bottom: 1rem;
+    }
+    
+    .image-preview-container {
+      gap: 0.5rem;
+    }
+    
+    mat-form-field {
+      font-size: 0.9rem;
+    }
+  }
+  
+  /* Medium devices (tablets, 481px to 768px) */
+  @media (min-width: 481px) and (max-width: 768px) {
+    .form-col {
+      min-width: 45%; 
+    }
+  
+    .image-preview {
+      width: 90px;
+      height: 90px;
+    }
+  
+    .add-product {
+      padding: 1rem;
+    }
+  }
+  
+  /* Large devices (desktops, 769px and up) */
+  @media (min-width: 769px) {
+    .form-col {
+      min-width: 250px; 
+    }
+  
+    .image-preview {
+      width: 100px;
+      height: 100px;
+    }
+  }
+  
+  mat-dialog-content {
+    max-width: 100%; 
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 0;
+  }
