@@ -36,6 +36,13 @@ import {
   deleteObject,
 } from 'firebase/storage';
 import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+
+interface CloudinaryResponse {
+  secure_url: string;
+  public_id: string;
+  // Add other properties as needed
+}
 @Component({
   selector: 'app-my-profile',
   standalone: true,
@@ -52,6 +59,8 @@ import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
     MatSnackBarModule,
     MatDialogModule,
     RouterModule,
+    RouterModule,
+    HttpClientModule,
   ],
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.css',
@@ -71,7 +80,8 @@ export class MyProfileComponent implements OnInit {
     private router: Router,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private http: HttpClient
   ) {
     this.profileForm = this.fb.group({
       displayName: ['', Validators.required],
@@ -95,17 +105,13 @@ export class MyProfileComponent implements OnInit {
 
   ngOnInit(): void {
     // Add a console log to check if ngOnInit is being called
-    console.log('MyProfileComponent initialized');
 
     onAuthStateChanged(this.auth, (user) => {
-      console.log('User state changed:', user);
       if (user) {
         this.currentUser = user;
-        console.log('myprofile-container', this.currentUser);
         this.loadUserData();
         this.loadProfileImage();
       } else {
-        console.log('No user logged in');
         this.router.navigate(['/auth']);
       }
     });
@@ -122,7 +128,6 @@ export class MyProfileComponent implements OnInit {
   }
 
   async loadUserData(): Promise<void> {
-    console.log('Loading user data for:', this.currentUser?.email);
     if (this.currentUser) {
       // Set the basic user data from Firebase Auth
       this.profileForm.patchValue({
@@ -139,7 +144,6 @@ export class MyProfileComponent implements OnInit {
 
         if (userDoc.exists() && userDoc.data()?.['phoneNumber']) {
           phoneNumber = userDoc.data()['phoneNumber'];
-          console.log('Phone number loaded from Firestore:', phoneNumber);
         }
       } catch (firestoreError) {
         console.error('Error loading from Firestore:', firestoreError);
@@ -152,16 +156,11 @@ export class MyProfileComponent implements OnInit {
           `user_${this.currentUser.uid}_phone`
         );
         if (phoneNumber) {
-          console.log('Phone number loaded from localStorage:', phoneNumber);
-
           // Optionally sync back to Firestore if found in localStorage but not in Firestore
           try {
             const userRef = doc(this.firestore, 'users', this.currentUser.uid);
             await setDoc(userRef, { phoneNumber }, { merge: true });
-            console.log('Synced phone number from localStorage to Firestore');
-          } catch (syncError) {
-            console.error('Error syncing to Firestore:', syncError);
-          }
+          } catch (syncError) {}
         }
       }
 
@@ -175,53 +174,44 @@ export class MyProfileComponent implements OnInit {
   loadProfileImage(): void {
     if (this.currentUser && this.currentUser.photoURL) {
       this.profileImageUrl = this.currentUser.photoURL;
-      console.log('Profile image URL:', this.profileImageUrl);
     } else {
       this.profileImageUrl =
         'https://th.bing.com/th/id/OIP.a9qb_VLfFjvlrDfc-iNLpgHaHa?rs=1&pid=ImgDetMain';
-      console.log('Using default profile image');
     }
   }
 
   onFileSelected(event: any): void {
     this.selectedFile = event.target.files[0];
     if (this.selectedFile) {
-      console.log('File selected:', this.selectedFile.name);
       this.uploadProfileImage();
     }
   }
 
   async uploadProfileImage(): Promise<void> {
     if (!this.selectedFile || !this.currentUser) return;
-
     this.isLoading = true;
-    try {
-      const storage = getStorage();
-      console.log('Uploading profile image...');
 
-      // Delete existing profile image if it exists
-      if (
-        this.currentUser.photoURL &&
-        this.currentUser.photoURL.includes('firebase')
-      ) {
-        const oldImageRef = ref(
-          storage,
-          `profile-images/${this.currentUser.uid}`
-        );
-        await deleteObject(oldImageRef).catch((error) => {
-          console.log('No existing image to delete or error:', error);
-        });
+    try {
+      const formData = new FormData();
+      formData.append('file', this.selectedFile);
+      formData.append('upload_preset', 'ifarmPhotos'); // Use your preset name
+      formData.append('api_key', '577692892646954'); // Optional, depending on setup
+      formData.append('folder', `ifarm/profileImages/${this.currentUser.uid}`); // Optional, for organization
+
+      const response = await this.http
+        .post<CloudinaryResponse>(
+          'https://api.cloudinary.com/v1_1/your_cloud_name/image/upload',
+          formData
+        )
+        .toPromise();
+
+      if (!response) {
+        throw new Error('No response received from Cloudinary');
       }
 
-      // Upload new image
-      const storageRef = ref(storage, `profile-images/${this.currentUser.uid}`);
-      await uploadBytes(storageRef, this.selectedFile);
-      const downloadURL = await getDownloadURL(storageRef);
-
-      // Update user profile
+      const downloadURL = response.secure_url;
       await updateProfile(this.currentUser, { photoURL: downloadURL });
       this.profileImageUrl = downloadURL;
-      console.log('Profile image updated successfully:', downloadURL);
       this.showMessage('Profile image updated successfully');
     } catch (error: any) {
       console.error('Error uploading image:', error);
@@ -242,11 +232,6 @@ export class MyProfileComponent implements OnInit {
       if (!this.currentUser) throw new Error('User not authenticated');
 
       const { displayName, email, phoneNumber } = this.profileForm.value;
-      console.log('Updating profile with:', {
-        displayName,
-        email,
-        phoneNumber,
-      });
 
       // Update display name
       await updateProfile(this.currentUser, { displayName });
@@ -262,7 +247,6 @@ export class MyProfileComponent implements OnInit {
           `user_${this.currentUser.uid}_phone`,
           phoneNumber || ''
         );
-        console.log('Phone number saved to localStorage:', phoneNumber);
       }
 
       // Try to store in Firestore
@@ -279,7 +263,6 @@ export class MyProfileComponent implements OnInit {
           },
           { merge: true }
         );
-        console.log('User data saved to Firestore');
       } catch (firestoreError) {
         console.error(
           'Error saving to Firestore, using localStorage only:',
@@ -288,7 +271,6 @@ export class MyProfileComponent implements OnInit {
         // We already saved to localStorage, so we can continue
       }
 
-      console.log('Profile updated successfully');
       this.showMessage('Profile updated successfully');
     } catch (error: any) {
       console.error('Error updating profile:', error);
