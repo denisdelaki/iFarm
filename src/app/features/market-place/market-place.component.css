@@ -65,8 +65,32 @@
   .add-product-button button {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
-    min-width: 120px; /* Touch-friendly */
+    min-width: 120px; 
+    background-color: #4CAF50;
+    color: white;
+    border: none;
   }
+  .edit-button{
+    color: #4CAF50 !important;
+    padding: 5px;
+  }
+  .out-of-stock-button{
+    color: #F44336;
+    padding: 5px;
+  }
+  .delete-button{
+    color: #FF9800;
+    padding: 5px;
+  }
+
+  ::ng-deep .mat-mdc-tab .mdc-tab-indicator__content--underline {
+    border-color: #4CAF50 !important;
+  }
+  ::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+    color: #4CAF50 !important;
+  }
+  
+
   
   /* Product list */
   .product-list {
@@ -84,6 +108,7 @@
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
+    margin-top: 10px;
   }
   
   .product-card:hover {
@@ -504,7 +529,7 @@
     }
   
     .product-actions {
-      flex-direction: column;
+      flex-direction: row;
     }
   
     .order-item {

@@ -4,6 +4,23 @@
     max-width: 100%; 
   }
   
+  mat-icon{
+    color: #4CAF50 !important;
+  }
+  .add-product-button {
+    background-color: #4CAF50 !important;
+    color: white !important;
+  }
+  .add-product-button:hover {
+    background-color: #45a049 !important;
+  }
+  .add-product-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.5);
+  }
+  .add-product-button mat-icon{
+    color: white !important;
+  }
   /* Form section spacing */
   .form-section {
     margin-bottom: 1.5rem;
@@ -22,6 +39,21 @@
     margin-right: 0.5rem;
   }
   
+  ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+  ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+  ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+    border-color: #4CAF50 !important;
+  }
+  
+  ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
+    color: #4CAF50 !important;
+  }
+  
+  ::ng-deep .mat-mdc-form-field.mat-focused .mat-form-field-underline .mat-form-field-ripple {
+    background-color: #4CAF50 !important;
+  }
+
+
   /* Form row for multi-column layout */
   .form-row {
     display: flex;
@@ -219,9 +251,87 @@
       font-size: 0.75rem;
     }
   }
+  /* Extra small devices (phones, 320px and below) */
+@media (max-width: 320px) {
+  .add-product {
+    padding: 0.2rem;
+  }
   
+  .form-section {
+    margin-bottom: 0.75rem;
+  }
+  
+  .section-title {
+    font-size: 0.65rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .form-col {
+    min-width: 100%;
+  }
+  
+  .full-width {
+    width: 80%;
+  }
+  
+  .image-preview {
+    width: 25px;
+    height: 35px;
+  }
+  
+  .image-preview-container {
+    gap: 0.3rem;
+  }
+  
+  .remove-image {
+    width: 1.2rem;
+    height: 1.2rem;
+    top: -0.3rem;
+    right: -0.3rem;
+  }
+  
+  .remove-image mat-icon {
+    font-size: 0.8rem;
+  }
+  
+  mat-dialog-content {
+    max-height: 70vh;
+  }
+  
+  mat-dialog-actions {
+    padding: 0.2rem;
+  }
+  
+  mat-dialog-actions button {
+    min-width: 40px;
+    font-size: 0.5rem;
+    padding: 0.15rem 0.25rem;
+  }
+  
+  mat-form-field {
+    font-size: 0.8rem;
+  }
+  
+  .selected-files-info {
+    font-size: 0.7rem;
+  }
+  
+  .image-upload-container button {
+    font-size: 0.65rem;
+  }
+  
+  .mat-mdc-card-content {
+    padding: 0 !important;
+  }
+}
+
   /* Additional styles for very small screens */
-  @media (max-width: 360px) {
+  @media (max-width: 320px) {
     .add-product {
       padding: 0.25rem;
     }

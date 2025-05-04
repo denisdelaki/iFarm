@@ -94,6 +94,7 @@ export class MarketPlaceComponent implements OnInit {
   orders: Order[] = [];
   isLoading = false;
   activeTab = 0;
+  // stripe: Stripe | null = null; // Stripe instance
 
   // Stats
   totalProducts = 0;
@@ -110,8 +111,14 @@ export class MarketPlaceComponent implements OnInit {
     private dialog: MatDialog
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.isLoading = true;
+
+    // Initialize Stripe with your Publishable Key
+    // this.stripe = await loadStripe(
+    //   'pk_test_51MBL1aCD3E7fzycfXn5nDwha4WVcS4bSC2nX5k5CTwIKTw8ZPzXl8n7ngi0Kxqw47M1fB1HKo4A5J4LmTqdtlj2g00bYVSs3jO'
+    // );
+
     authState(this.auth).subscribe({
       next: (user) => {
         this.user = user;
@@ -146,7 +153,6 @@ export class MarketPlaceComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result && result.success) {
-        // Optionally switch to the Browse Products tab
         this.activeTab = 0;
       }
     });
@@ -163,15 +169,12 @@ export class MarketPlaceComponent implements OnInit {
           const product = childSnapshot.val();
           product.id = childSnapshot.key;
 
-          // Initialize image carousel index for this product
           this.currentImageIndex[product.id] = 0;
 
-          // Ensure imageUrls is an array (for backward compatibility)
           if (!Array.isArray(product.imageUrls)) {
             product.imageUrls = product.imageUrl ? [product.imageUrl] : [];
           }
 
-          // Ensure inventory exists (for backward compatibility)
           if (!product.inventory) {
             product.inventory = {
               total: 1,
@@ -182,7 +185,6 @@ export class MarketPlaceComponent implements OnInit {
           this.products.push(product);
         });
 
-        // Update stats
         this.totalProducts = this.products.length;
         this.myProducts = this.products.filter(
           (p) => p.sellerId === this.user.uid
@@ -243,13 +245,11 @@ export class MarketPlaceComponent implements OnInit {
           const order = childSnapshot.val();
           order.id = childSnapshot.key;
 
-          // Only include orders where the user is either the buyer or seller
           if (order.buyerId === userId || order.sellerId === userId) {
             this.orders.push(order);
           }
         });
 
-        // Update stats
         this.myOrders = this.orders.filter((o) => o.buyerId === userId).length;
       });
     } catch (err: any) {
@@ -275,6 +275,7 @@ export class MarketPlaceComponent implements OnInit {
     }
 
     try {
+      // Create the order in Firebase
       const order: Order = {
         productId: product.id!,
         productName: product.name,
@@ -289,32 +290,38 @@ export class MarketPlaceComponent implements OnInit {
         createdAt: new Date().toISOString(),
       };
 
-      // Create a new order reference with an auto-generated key
       const ordersRef = ref(this.database, 'orders');
       const newOrderRef = push(ordersRef);
-
-      // Set the order data at the new reference
       await set(newOrderRef, order);
 
       // Update product inventory
       const productRef = ref(this.database, `products/${product.id}`);
+      const newRemainingCount = product.inventory.remaining - 1;
       await update(productRef, {
-        'inventory/remaining': product.inventory.remaining - 1,
+        'inventory/remaining': newRemainingCount,
       });
 
+      // Create Stripe checkout session
       const session = await this.createCheckoutSession(
         product,
         newOrderRef.key!
       );
 
-      this.snackBar.open('Order placed successfully!', 'Close', {
+      // Redirect to Stripe Checkout
+      // if (this.stripe && session.id) {
+      //   const { error } = await this.stripe.redirectToCheckout({
+      //     sessionId: session.id,
+      //   });
+      //   if (error) {
+      //     throw new Error(error.message);
+      //   }
+      // } else {
+      //   throw new Error('Stripe is not initialized.');
+      // }
+
+      this.snackBar.open('Redirecting to checkout...', 'Close', {
         duration: 3000,
       });
-
-      // Switch to orders tab
-      this.activeTab = 1;
-
-      // await stripe.redirectToCheckout({ sessionId: session.id });
     } catch (err: any) {
       this.snackBar.open('Error initiating purchase: ' + err.message, 'Close', {
         duration: 3000,
@@ -324,18 +331,22 @@ export class MarketPlaceComponent implements OnInit {
 
   async createCheckoutSession(product: Product, orderId: string) {
     try {
-      const response = await fetch('YOUR_STRIPE_CHECKOUT_ENDPOINT', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          productName: product.name,
-          price: product.price * 100, // Stripe expects amount in cents
-          currency: 'usd',
-          success_url: window.location.href,
-          cancel_url: window.location.href,
-          metadata: { orderId },
-        }),
-      });
+      const response = await fetch(
+        'http://localhost:3000/create-checkout-session',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            productName: product.name,
+            price: product.price * 100, // Convert to cents for Stripe
+            currency: 'usd',
+            success_url: `${window.location.origin}/marketplace`, // Adjust as needed
+            cancel_url: `${window.location.origin}/marketplace`, // Adjust as needed
+            metadata: { orderId },
+          }),
+        }
+      );
+
       const data = await response.json();
       if (data.id) {
         return data;
