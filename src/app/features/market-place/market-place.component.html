@@ -165,6 +165,7 @@
                 mat-stroked-button
                 color="primary"
                 *ngIf="user && user.uid === product.sellerId"
+                (click)="openEditProductDialog(product)"
               >
                 <mat-icon> edit</mat-icon> Edit
               </button>
@@ -173,6 +174,7 @@
                 mat-stroked-button
                 color="primary"
                 *ngIf="user && user.uid === product.sellerId"
+                (click)="deleteProduct(product)"
               >
                 <mat-icon> delete</mat-icon> Delete
               </button>

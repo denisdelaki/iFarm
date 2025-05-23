@@ -1,180 +1,140 @@
+<h2 mat-dialog-title>{{ isEditing ? "Edit Product" : "Add New Product" }}</h2>
+
 <mat-dialog-content>
-  <mat-card class="add-product">
-    <mat-card-header>
-      <mat-card-title>List a New Product</mat-card-title>
-      <mat-card-subtitle
-        >Fill in the details to add your product to the
-        marketplace</mat-card-subtitle
+  <form [formGroup]="productForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Product Name</mat-label>
+      <input matInput formControlName="name" placeholder="Enter product name" />
+      <mat-error *ngIf="productForm.get('name')?.invalid"
+        >Product name is required</mat-error
       >
-    </mat-card-header>
-    <mat-card-content>
-      <form (ngSubmit)="addProduct()">
-        <!-- Basic Information Section -->
-        <div class="form-section">
-          <div class="section-title">
-            <mat-icon>info</mat-icon> Basic Information
-          </div>
-          <div class="form-row">
-            <div class="form-col">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Product Name</mat-label>
-                <input
-                  matInput
-                  type="text"
-                  [(ngModel)]="newProduct.name"
-                  name="name"
-                  required
-                />
-                <mat-icon matSuffix>shopping_bag</mat-icon>
-              </mat-form-field>
-            </div>
-            <div class="form-col">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Category</mat-label>
-                <mat-select
-                  [(ngModel)]="newProduct.category"
-                  name="category"
-                  required
-                >
-                  <mat-option
-                    *ngFor="let category of categories"
-                    [value]="category"
-                  >
-                    {{ category }}
-                  </mat-option>
-                </mat-select>
-                <mat-icon matSuffix>category</mat-icon>
-              </mat-form-field>
-            </div>
-          </div>
+    </mat-form-field>
 
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Description</mat-label>
-            <textarea
-              matInput
-              [(ngModel)]="newProduct.description"
-              name="description"
-              required
-              rows="4"
-              placeholder="Describe your product in detail..."
-            ></textarea>
-            <mat-icon matSuffix>description</mat-icon>
-          </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        rows="3"
+        placeholder="Describe your product"
+      ></textarea>
+      <mat-error *ngIf="productForm.get('description')?.invalid"
+        >Description is required</mat-error
+      >
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Price ($)</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="price"
+          min="0"
+          step="0.01"
+        />
+        <mat-error *ngIf="productForm.get('price')?.invalid"
+          >Valid price is required</mat-error
+        >
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category">
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="productForm.get('category')?.invalid"
+          >Category is required</mat-error
+        >
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Location</mat-label>
+      <input
+        matInput
+        formControlName="location"
+        placeholder="Where is this product available?"
+      />
+      <mat-error *ngIf="productForm.get('location')?.invalid"
+        >Location is required</mat-error
+      >
+    </mat-form-field>
+
+    <div formGroupName="inventory" class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Total Inventory</mat-label>
+        <input matInput type="number" formControlName="total" min="1" />
+        <mat-error *ngIf="productForm.get('inventory.total')?.invalid"
+          >Valid inventory is required</mat-error
+        >
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Available Units</mat-label>
+        <input matInput type="number" formControlName="remaining" min="0" />
+        <mat-error *ngIf="productForm.get('inventory.remaining')?.invalid"
+          >Valid available units required</mat-error
+        >
+      </mat-form-field>
+    </div>
+
+    <div class="image-upload-section">
+      <h3>Product Images</h3>
+
+      <div class="image-previews" *ngIf="previewUrls.length > 0">
+        <div
+          class="image-preview-container"
+          *ngFor="let url of previewUrls; let i = index"
+        >
+          <img [src]="url" alt="Product preview" />
+          <button
+            mat-icon-button
+            color="warn"
+            type="button"
+            (click)="removeImage(i)"
+            class="remove-image"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
         </div>
+      </div>
 
-        <!-- Pricing & Inventory Section -->
-        <div class="form-section">
-          <div class="section-title">
-            <mat-icon>attach_money</mat-icon> Pricing & Inventory
-          </div>
-          <div class="form-row">
-            <div class="form-col">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Price</mat-label>
-                <input
-                  matInput
-                  type="number"
-                  [(ngModel)]="newProduct.price"
-                  name="price"
-                  required
-                  min="0"
-                  step="0.01"
-                />
-                <span matPrefix>$ </span>
-                <mat-icon matSuffix>monetization_on</mat-icon>
-              </mat-form-field>
-            </div>
-            <div class="form-col">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Total Inventory</mat-label>
-                <input
-                  matInput
-                  type="number"
-                  [(ngModel)]="newProduct.inventory.total"
-                  name="inventory"
-                  required
-                  min="1"
-                  step="1"
-                />
-                <mat-icon matSuffix>inventory_2</mat-icon>
-              </mat-form-field>
-            </div>
-          </div>
-        </div>
-
-        <!-- Location Section -->
-        <div class="form-section">
-          <div class="section-title">
-            <mat-icon>location_on</mat-icon> Location
-          </div>
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Location</mat-label>
-            <input
-              matInput
-              type="text"
-              [(ngModel)]="newProduct.location"
-              name="location"
-              required
-              placeholder="Where is this product available?"
-            />
-            <mat-icon matSuffix>place</mat-icon>
-          </mat-form-field>
-        </div>
-
-        <!-- Images Section -->
-        <div class="form-section">
-          <div class="section-title">
-            <mat-icon>image</mat-icon> Product Images
-          </div>
-          <div class="image-upload-container">
-            <button
-              mat-stroked-button
-              type="button"
-              (click)="fileInput.click()"
-              class="btn btn-secondary"
-            >
-              <mat-icon>cloud_upload</mat-icon> Upload Images
-            </button>
-            <input
-              hidden
-              type="file"
-              #fileInput
-              (change)="onFilesSelected($event)"
-              accept="image/*"
-              multiple
-            />
-
-            <div class="image-preview-container" *ngIf="previewUrls.length > 0">
-              <div
-                class="image-preview"
-                *ngFor="let url of previewUrls; let i = index"
-              >
-                <img [src]="url" alt="Product preview" />
-                <div class="remove-image" (click)="removeSelectedImage(i)">
-                  <mat-icon>close</mat-icon>
-                </div>
-              </div>
-            </div>
-
-            <div *ngIf="previewUrls.length > 0" class="selected-files-info">
-              {{ previewUrls.length }} image(s) selected
-            </div>
-          </div>
-        </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="fileInput.click()"
+        class="upload-button"
+      >
+        <mat-icon>add_photo_alternate</mat-icon> Add Images
+      </button>
+      <input
+        hidden
+        type="file"
+        #fileInput
+        (change)="onFileSelected($event)"
+        accept="image/*"
+        multiple
+      />
+    </div>
+  </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
   <button
-    class="add-product-button"
     mat-raised-button
     color="primary"
-    (click)="addProduct()"
-    [disabled]="isLoading"
+    (click)="onSubmit()"
+    [disabled]="productForm.invalid || isLoading"
   >
-    <mat-icon>add_circle</mat-icon> Add Product
+    <mat-icon>{{ isEditing ? "save" : "add" }}</mat-icon>
+    {{ isEditing ? "Update Product" : "Add Product" }}
   </button>
 </mat-dialog-actions>
+
+<div *ngIf="isLoading" class="loading-overlay">
+  <mat-spinner diameter="40"></mat-spinner>
+</div>

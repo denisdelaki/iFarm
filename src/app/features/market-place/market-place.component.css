@@ -79,7 +79,7 @@
     padding: 5px;
   }
   .delete-button{
-    color: #FF9800;
+    color: #FF9800 !important;
     padding: 5px;
   }
 

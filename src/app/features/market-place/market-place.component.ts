@@ -329,6 +329,50 @@ export class MarketPlaceComponent implements OnInit {
     }
   }
 
+  async deleteProduct(product: Product) {
+    if (!product.id) {
+      this.snackBar.open('Error: Product ID is missing', 'Close', {
+        duration: 3000,
+      });
+      return;
+    }
+
+    try {
+      // Confirm deletion
+      if (confirm(`Are you sure you want to delete "${product.name}"?`)) {
+        const productRef = ref(this.database, `products/${product.id}`);
+        await set(productRef, null);
+
+        this.snackBar.open('Product deleted successfully', 'Close', {
+          duration: 3000,
+        });
+      }
+    } catch (err: any) {
+      this.snackBar.open('Error deleting product: ' + err.message, 'Close', {
+        duration: 3000,
+      });
+    }
+  }
+
+  openEditProductDialog(product: Product) {
+    const dialogRef = this.dialog.open(AddProductDialogComponent, {
+      width: '600px',
+      data: {
+        user: this.user,
+        isEditing: true,
+        product: { ...product },
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.success) {
+        this.snackBar.open('Product updated successfully', 'Close', {
+          duration: 3000,
+        });
+      }
+    });
+  }
+
   async createCheckoutSession(product: Product, orderId: string) {
     try {
       const response = await fetch(

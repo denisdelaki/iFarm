@@ -1,65 +1,54 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import {
+  MatDialogModule,
   MatDialogRef,
   MAT_DIALOG_DATA,
-  MatDialogModule,
 } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Database, ref, set, push } from '@angular/fire/database';
-import { MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-
-interface Product {
-  id?: string;
-  name: string;
-  description: string;
-  price: number;
-  imageUrls: string[];
-  location: string;
-  sellerId: string;
-  sellerName: string;
-  sellerEmail: string;
-  sellerPhone: string;
-  createdAt: any;
-  inventory: {
-    total: number;
-    remaining: number;
-  };
-  category: string;
-}
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { Database, ref, push, set, update } from '@angular/fire/database';
+import {
+  Storage,
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+} from '@angular/fire/storage';
+import { MatSpinner } from '@angular/material/progress-spinner';
 
 @Component({
+  selector: 'app-add-product-dialog',
   standalone: true,
   imports: [
-    MatCardModule,
-    MatIconModule,
-    MatDialogModule,
     CommonModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    FormsModule,
-    MatSnackBarModule,
-    MatOptionModule,
-    MatSelectModule,
+    MatDialogModule,
     MatButtonModule,
+    MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    MatIconModule,
+    MatSpinner,
   ],
-  selector: 'app-add-product-dialog',
   templateUrl: './add-product-dialog.component.html',
   styleUrls: ['./add-product-dialog.component.css'],
 })
-export class AddProductDialogComponent {
-  newProduct: Product;
+export class AddProductDialogComponent implements OnInit {
+  productForm: FormGroup;
+  isLoading = false;
   selectedFiles: File[] = [];
   previewUrls: string[] = [];
-  isLoading = false;
   categories = [
     'Vegetables',
     'Fruits',
@@ -67,41 +56,67 @@ export class AddProductDialogComponent {
     'Dairy',
     'Meat',
     'Poultry',
+    'Fish',
     'Seeds',
+    'Fertilizers',
     'Equipment',
     'Other',
   ];
+  isEditing = false;
 
   constructor(
-    public dialogRef: MatDialogRef<AddProductDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { user: any },
+    private fb: FormBuilder,
+    private database: Database,
+    private storage: Storage,
     private snackBar: MatSnackBar,
-    private database: Database
+    public dialogRef: MatDialogRef<AddProductDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.newProduct = {
-      name: '',
-      description: '',
-      price: 0,
-      imageUrls: [],
-      location: '',
-      sellerId: '',
-      sellerName: '',
-      sellerEmail: '',
-      sellerPhone: '',
-      createdAt: null,
-      inventory: {
-        total: 1,
-        remaining: 1,
-      },
-      category: '',
-    };
+    this.isEditing = data?.isEditing || false;
+
+    this.productForm = this.fb.group({
+      name: ['', [Validators.required]],
+      description: ['', [Validators.required]],
+      price: [0, [Validators.required, Validators.min(0)]],
+      category: ['', [Validators.required]],
+      location: ['', [Validators.required]],
+      inventory: this.fb.group({
+        total: [1, [Validators.required, Validators.min(1)]],
+        remaining: [1, [Validators.required, Validators.min(0)]],
+      }),
+    });
   }
 
-  onFilesSelected(event: any) {
+  ngOnInit(): void {
+    if (this.isEditing && this.data.product) {
+      // If editing, populate the form with existing product data
+      const product = this.data.product;
+      this.productForm.patchValue({
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        category: product.category,
+        location: product.location,
+        inventory: {
+          total: product.inventory.total,
+          remaining: product.inventory.remaining,
+        },
+      });
+
+      // Set preview URLs for existing images
+      if (product.imageUrls && product.imageUrls.length > 0) {
+        this.previewUrls = [...product.imageUrls];
+      }
+    }
+  }
+
+  onFileSelected(event: any): void {
     const files = event.target.files;
     if (files) {
       for (let i = 0; i < files.length; i++) {
         this.selectedFiles.push(files[i]);
+
+        // Create preview URL
         const reader = new FileReader();
         reader.onload = (e: any) => {
           this.previewUrls.push(e.target.result);
@@ -111,151 +126,94 @@ export class AddProductDialogComponent {
     }
   }
 
-  removeSelectedImage(index: number) {
-    this.selectedFiles.splice(index, 1);
-    this.previewUrls.splice(index, 1);
-  }
-
-  async uploadImages(): Promise<string[]> {
-    if (this.selectedFiles.length === 0) {
-      this.snackBar.open('Please select at least one image.', 'Close', {
-        duration: 3000,
-      });
-      return [];
-    }
-
-    try {
-      const uploadedUrls: string[] = [];
-      for (const file of this.selectedFiles) {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'marketImages');
-        formData.append('api_key', '577692892646954');
-        formData.append(
-          'folder',
-          `ifarm/marketImages/${this.data.user?.uid || 'anonymous'}`
-        );
-
-        const response = await fetch(
-          `https://api.cloudinary.com/v1_1/your_cloud_name/image/upload`,
-          {
-            method: 'POST',
-            body: formData,
-          }
-        );
-
-        const data = await response.json();
-        if (data.secure_url) {
-          uploadedUrls.push(data.secure_url);
-        }
-      }
-
-      if (uploadedUrls.length > 0) {
-        return uploadedUrls;
-      } else {
-        throw new Error('Image upload failed.');
-      }
-    } catch (err: any) {
-      throw err;
+  removeImage(index: number): void {
+    // If editing and removing an existing image
+    if (
+      this.isEditing &&
+      index < this.previewUrls.length &&
+      index >= this.selectedFiles.length
+    ) {
+      this.previewUrls.splice(index, 1);
+    } else {
+      // If removing a newly added image
+      this.selectedFiles.splice(index, 1);
+      this.previewUrls.splice(index, 1);
     }
   }
 
-  validateProductForm(): boolean {
-    if (!this.newProduct.name.trim()) {
-      this.snackBar.open('Please enter a product name', 'Close', {
+  async onSubmit(): Promise<void> {
+    if (this.productForm.invalid) {
+      this.snackBar.open('Please fill all required fields correctly', 'Close', {
         duration: 3000,
       });
-      return false;
-    }
-    if (!this.newProduct.description.trim()) {
-      this.snackBar.open('Please enter a product description', 'Close', {
-        duration: 3000,
-      });
-      return false;
-    }
-    if (this.newProduct.price <= 0) {
-      this.snackBar.open('Please enter a valid price', 'Close', {
-        duration: 3000,
-      });
-      return false;
-    }
-    if (!this.newProduct.location.trim()) {
-      this.snackBar.open('Please enter a location', 'Close', {
-        duration: 3000,
-      });
-      return false;
-    }
-    if (!this.newProduct.category) {
-      this.snackBar.open('Please select a category', 'Close', {
-        duration: 3000,
-      });
-      return false;
-    }
-    if (this.selectedFiles.length === 0) {
-      this.snackBar.open('Please upload at least one image', 'Close', {
-        duration: 3000,
-      });
-      return false;
-    }
-    if (this.newProduct.inventory.total <= 0) {
-      this.snackBar.open('Please enter a valid inventory amount', 'Close', {
-        duration: 3000,
-      });
-      return false;
-    }
-    return true;
-  }
-
-  async addProduct() {
-    if (!this.data.user) {
-      this.snackBar.open('Please log in to add a product.', 'Close', {
-        duration: 3000,
-      });
-      return;
-    }
-
-    if (!this.validateProductForm()) {
       return;
     }
 
     this.isLoading = true;
-
     try {
-      const uploadedImageUrls = await this.uploadImages();
-      if (uploadedImageUrls.length === 0) {
-        this.isLoading = false;
-        return;
+      const formData = this.productForm.value;
+
+      // Upload images if there are any new ones selected
+      let imageUrls: string[] = [];
+
+      // If editing, start with existing images
+      if (this.isEditing && this.data.product.imageUrls) {
+        imageUrls = [...this.data.product.imageUrls];
       }
 
-      this.newProduct.imageUrls = uploadedImageUrls;
-      this.newProduct.sellerId = this.data.user.uid;
-      this.newProduct.sellerName = this.data.user.displayName || 'Anonymous';
-      this.newProduct.sellerEmail = this.data.user.email;
-      this.newProduct.sellerPhone =
-        this.data.user.phoneNumber || 'Not provided';
-      this.newProduct.createdAt = new Date().toISOString();
+      // Upload any new images
+      if (this.selectedFiles.length > 0) {
+        for (const file of this.selectedFiles) {
+          const filePath = `product-images/${Date.now()}_${file.name}`;
+          const fileRef = storageRef(this.storage, filePath);
+          await uploadBytes(fileRef, file);
+          const downloadUrl = await getDownloadURL(fileRef);
+          imageUrls.push(downloadUrl);
+        }
+      }
 
-      const productsRef = ref(this.database, 'products');
-      const newProductRef = push(productsRef);
-      await set(newProductRef, this.newProduct);
+      const productData = {
+        name: formData.name,
+        description: formData.description,
+        price: formData.price,
+        category: formData.category,
+        location: formData.location,
+        imageUrls: imageUrls,
+        sellerId: this.data.user.uid,
+        sellerName: this.data.user.displayName || 'Anonymous',
+        sellerEmail: this.data.user.email,
+        sellerPhone: this.data.user.phoneNumber || 'Not provided',
+        inventory: formData.inventory,
+        createdAt: this.isEditing
+          ? this.data.product.createdAt
+          : new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
-      this.snackBar.open('Product added successfully!', 'Close', {
-        duration: 3000,
-      });
+      if (this.isEditing) {
+        // Update existing product
+        const productRef = ref(
+          this.database,
+          `products/${this.data.product.id}`
+        );
+        await update(productRef, productData);
+      } else {
+        // Add new product
+        const productsRef = ref(this.database, 'products');
+        await push(productsRef, productData);
+      }
 
-      // Close the dialog and pass success result
       this.dialogRef.close({ success: true });
-    } catch (err: any) {
-      this.snackBar.open('Error adding product: ' + err.message, 'Close', {
-        duration: 3000,
+    } catch (error: any) {
+      this.snackBar.open(`Error: ${error.message}`, 'Close', {
+        duration: 5000,
       });
-      this.dialogRef.close({ success: false, error: err.message });
     } finally {
       this.isLoading = false;
     }
   }
 
-  onCancel() {
+  onCancel(): void {
     this.dialogRef.close();
   }
 }
